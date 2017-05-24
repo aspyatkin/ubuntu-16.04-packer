@@ -1,6 +1,6 @@
 {
   "description": "A Packer template to build Ubuntu 16.04 Server box",
-  "min_packer_version": "0.12.3",
+  "min_packer_version": "1.0.0",
   "variables": {
   },
   "builders": [
@@ -11,7 +11,7 @@
       "iso_checksum": "737ae7041212c628de5751d15c3016058b0e833fdc32e7420209b76ca3d0a535",
       "iso_checksum_type": "sha256",
       "http_directory": "http",
-      "disk_size": 20480,
+      "disk_size": 15360,
       "headless": false,
       "vm_name": "packer-ubuntu-16.04-server-amd64",
       "hard_drive_interface": "sata",
