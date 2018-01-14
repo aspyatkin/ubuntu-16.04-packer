@@ -39,6 +39,9 @@ apt-get -y purge libx11-data xauth libxmuu1 libxcb1 libx11-6 libxext6;
 # Delete obsolete networking
 apt-get -y purge ppp pppconfig pppoeconf;
 
+# Delete lxc packages
+apt-get -y purge lxd lxcfs;
+
 # Delete oddities
 apt-get -y purge popularity-contest installation-report command-not-found command-not-found-data friendly-recovery bash-completion fonts-ubuntu-font-family-console laptop-detect;
 
@@ -56,3 +59,16 @@ find /var/cache -type f -exec rm -rf {} \;
 
 # delete any logs that have built up during the install
 find /var/log/ -name *.log -exec rm -f {} \;
+
+# Cleaning up tmp
+rm -rf /tmp/*
+
+# Remove bash history
+unset HISTFILE
+rm -f /root/.bash_history
+rm -f /home/vagrant/.bash_history
+
+# Clear last login information
+>/var/log/lastlog
+>/var/log/wtmp
+>/var/log/btmp
