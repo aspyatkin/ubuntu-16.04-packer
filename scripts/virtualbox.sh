@@ -13,3 +13,4 @@ sh /tmp/vbox/VBoxLinuxAdditions.run \
 umount /tmp/vbox;
 rm -rf /tmp/vbox;
 rm -f $HOME_DIR/*.iso;
+usermod --append --groups vboxsf vagrant;

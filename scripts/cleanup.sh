@@ -42,11 +42,8 @@ apt-get -y purge ppp pppconfig pppoeconf;
 # Delete oddities
 apt-get -y purge popularity-contest installation-report command-not-found command-not-found-data friendly-recovery bash-completion fonts-ubuntu-font-family-console laptop-detect;
 
-# Delete lxc/lxd
-apt-get -y purge lxc-common lxcfs lxd lxd-client;
-
-# Delete disk tools/filesystems
-apt-get -y purge btrfs-tools cryptsetup cryptsetup-bin lvm2 mdadm ntfs-3g xfsprogs;
+# Delete some other packages
+apt-get -y purge usbutils wireless-regdb crda;
 
 # Exlude the files we don't need w/o uninstalling linux-firmware
 echo "==> Setup dpkg excludes for linux-firmware"
