@@ -1,7 +1,5 @@
 #!/bin/bash -eux
 
-apt-get -y install dkms
-
 # set a default HOME_DIR environment variable if not set
 HOME_DIR="${HOME_DIR:-/home/vagrant}";
 

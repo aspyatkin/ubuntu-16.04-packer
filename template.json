@@ -1,28 +1,64 @@
 {
   "description": "A Packer template to build Ubuntu 16.04 Server box",
-  "min_packer_version": "1.2.4",
+  "min_packer_version": "1.3.1",
+
   "builders": [
     {
-      "type": "virtualbox-ovf",
-      "source_path": "source/instance.ova",
+      "type": "virtualbox-iso",
+      "boot_command": [
+        "<enter><wait><f6><esc><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "/install/vmlinuz<wait>",
+        " auto<wait>",
+        " console-setup/ask_detect=false<wait>",
+        " console-setup/layoutcode=us<wait>",
+        " console-setup/modelcode=pc105<wait>",
+        " debconf/frontend=noninteractive<wait>",
+        " debian-installer=en_US.UTF-8<wait>",
+        " fb=false<wait>",
+        " initrd=/install/initrd.gz<wait>",
+        " kbd-chooser/method=us<wait>",
+        " keyboard-configuration/layout=USA<wait>",
+        " keyboard-configuration/variant=USA<wait>",
+        " locale=en_US.UTF-8<wait>",
+        " netcfg/get_domain=vm<wait>",
+        " netcfg/get_hostname=vagrant<wait>",
+        " grub-installer/bootdev=/dev/sda<wait>",
+        " noapic<wait>",
+        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg<wait>",
+        " -- <wait>",
+        "<enter><wait>"
+      ],
+      "boot_wait": "10s",
+      "disk_size": "{{user `disk_size`}}",
+      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "guest_os_type": "Ubuntu_64",
+      "hard_drive_interface": "sata",
+      "headless": "",
+      "http_directory": "http",
+      "iso_checksum": "c94de1cc2e10160f325eb54638a5b5aa38f181d60ee33dae9578d96d932ee5f8",
+      "iso_checksum_type": "sha256",
+      "iso_url": "http://releases.ubuntu.com/16.04.5/ubuntu-16.04.5-server-amd64.iso",
+      "output_directory": "build",
+      "shutdown_command": "echo 'vagrant' | sudo -S shutdown -P now",
+      "ssh_wait_timeout": "10000s",
+      "ssh_port": 22,
       "ssh_username": "vagrant",
       "ssh_password": "vagrant",
-      "shutdown_command": "echo 'packer' | sudo -S shutdown -P now",
-      "headless": true,
-      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
-      "vm_name": "packer-ubuntu-16.04-server-amd64",
       "vboxmanage": [
         [
           "modifyvm",
           "{{.Name}}",
           "--memory",
-          "{{user `memory`}}"
+          "{{ user `memory` }}"
         ],
         [
           "modifyvm",
           "{{.Name}}",
           "--cpus",
-          "{{user `cpus`}}"
+          "{{ user `cpus` }}"
         ],
         [
           "modifyvm",
@@ -37,14 +73,14 @@
           "off"
         ]
       ],
-      "boot_wait": "5s",
-      "ssh_wait_timeout": "5m",
-      "output_directory": "build"
+      "virtualbox_version_file": ".vbox_version",
+      "vm_name": "packer-ubuntu-16.04-server-amd64"
     }
   ],
+
+
   "provisioners": [
     {
-      "type": "shell",
       "environment_vars": [
         "HOME_DIR=/home/vagrant"
       ],
@@ -52,37 +88,19 @@
       "expect_disconnect": true,
       "scripts": [
         "scripts/apt.sh",
-        "scripts/vagrant.sh",
         "scripts/sshd.sh",
-        "scripts/reboot.sh"
-      ]
-    },
-    {
-      "type": "shell",
-      "environment_vars": [
-        "HOME_DIR=/home/vagrant"
-      ],
-      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E sh -eux '{{.Path}}'",
-      "expect_disconnect": true,
-      "pause_before": "30s",
-      "scripts": [
+        "scripts/networking.sh",
+        "scripts/sudoers.sh",
+        "scripts/vagrant.sh",
         "scripts/virtualbox.sh",
-        "scripts/reboot.sh"
-      ]
-    },
-    {
-      "type": "shell",
-      "environment_vars": [
-        "HOME_DIR=/home/vagrant"
-      ],
-      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E sh -eux '{{.Path}}'",
-      "expect_disconnect": false,
-      "scripts": [
         "scripts/cleanup.sh",
         "scripts/minimize.sh"
-      ]
+      ],
+      "type": "shell"
     }
   ],
+
+
   "post-processors": [
     {
       "type": "vagrant",
@@ -90,8 +108,11 @@
       "output": "ubuntu-16.04-server-amd64.box"
     }
   ],
+
+
   "variables": {
     "memory": "512",
-    "cpus": "1"
+    "cpus": "1",
+    "disk_size": "8192"
   }
 }
