@@ -43,7 +43,7 @@ apt-get -y purge ppp pppconfig pppoeconf;
 apt-get -y purge popularity-contest installation-report command-not-found command-not-found-data friendly-recovery bash-completion fonts-ubuntu-font-family-console laptop-detect;
 
 # Delete some other packages
-apt-get -y purge usbutils wireless-regdb crda vim-common manpages console-setup console-setup-linux kbd xkb-data whiptail gcc make;
+apt-get -y purge usbutils wireless-regdb crda vim-common manpages console-setup console-setup-linux kbd xkb-data whiptail gcc make keyboard-configuration eject os-prober;
 
 # Exlude the files we don't need w/o uninstalling linux-firmware
 echo "==> Setup dpkg excludes for linux-firmware"
