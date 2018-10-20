@@ -1,7 +1,6 @@
 {
   "description": "A Packer template to build Ubuntu 16.04 Server box",
   "min_packer_version": "1.3.1",
-
   "builders": [
     {
       "type": "virtualbox-iso",
@@ -79,8 +78,6 @@
       "vm_name": "packer-ubuntu-16.04-server-amd64"
     }
   ],
-
-
   "provisioners": [
     {
       "environment_vars": [
@@ -101,8 +98,6 @@
       "type": "shell"
     }
   ],
-
-
   "post-processors": [
     {
       "type": "vagrant",
@@ -110,8 +105,6 @@
       "output": "ubuntu-16.04-server-amd64.box"
     }
   ],
-
-
   "variables": {
     "memory": "512",
     "cpus": "1",
