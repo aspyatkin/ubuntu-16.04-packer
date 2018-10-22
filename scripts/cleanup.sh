@@ -2,9 +2,9 @@
 
 # Delete all Linux headers
 dpkg --list \
-  | awk '{ print $2 }' \
-  | grep 'linux-headers' \
-  | xargs apt-get -y purge;
+    | awk '{ print $2 }' \
+    | grep 'linux-headers' \
+    | xargs apt-get -y purge;
 
 # Remove specific Linux kernels, such as linux-image-3.11.0-15-generic but
 # keeps the current kernel and does not touch the virtual packages,
@@ -41,6 +41,35 @@ apt-get -y purge ppp pppconfig pppoeconf;
 
 # Delete oddities
 apt-get -y purge popularity-contest installation-report command-not-found command-not-found-data friendly-recovery bash-completion fonts-ubuntu-font-family-console laptop-detect;
+
+# Delete some other packages
+apt-get -y purge \
+    usbutils \
+    libusb-1.0-0 \
+    binutils \
+    console-setup \
+    console-setup-linux \
+    cpp \
+    cpp-5 \
+    crda \
+    iw \
+    wireless-regdb \
+    eject \
+    file \
+    keyboard-configuration \
+    krb5-locales \
+    libmagic1 \
+    make \
+    manpages \
+    netcat-openbsd \
+    os-prober \
+    tasksel \
+    tasksel-data \
+    vim-common \
+    whiptail \
+    xkb-data \
+    pciutils \
+;
 
 # Exlude the files we don't need w/o uninstalling linux-firmware
 echo "==> Setup dpkg excludes for linux-firmware"
