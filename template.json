@@ -86,7 +86,7 @@
       "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E sh -eux '{{.Path}}'",
       "expect_disconnect": true,
       "scripts": [
-        "scripts/apt.sh",
+        "scripts/update.sh",
         "scripts/sshd.sh",
         "scripts/networking.sh",
         "scripts/sudoers.sh",
