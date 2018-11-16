@@ -1,75 +1,97 @@
-#!/bin/sh -eux
+#!/bin/bash
+set -Eeux;
 
 # Delete all Linux headers
-dpkg --list \
-    | awk '{ print $2 }' \
-    | grep 'linux-headers' \
-    | xargs apt-get -y purge;
+PKGS_LINUX_HEADERS=( $(dpkg --list | awk '{ print $2 }' | grep 'linux-headers' || true) );
 
 # Remove specific Linux kernels, such as linux-image-3.11.0-15-generic but
 # keeps the current kernel and does not touch the virtual packages,
 # e.g. 'linux-image-generic', etc.
-dpkg --list \
-    | awk '{ print $2 }' \
-    | grep 'linux-image-.*-generic' \
-    | grep -v `uname -r` \
-    | xargs apt-get -y purge;
+PKGS_LINUX_IMAGE=( $(dpkg --list | awk '{ print $2 }' | grep 'linux-image-.*-generic' | grep -v `uname -r` || true) );
 
 # Delete Linux source
-dpkg --list \
-    | awk '{ print $2 }' \
-    | grep linux-source \
-    | xargs apt-get -y purge;
+PKGS_LINUX_SOURCE=( $(dpkg --list | awk '{ print $2 }' | grep 'linux-source' || true) );
 
 # Delete development packages
-dpkg --list \
-    | awk '{ print $2 }' \
-    | grep -- '-dev$' \
-    | xargs apt-get -y purge;
+PKGS_DEV=( $(dpkg --list | awk '{ print $2 }' | grep -- '-dev$' || true) );
 
 # delete docs packages
-dpkg --list \
-    | awk '{ print $2 }' \
-    | grep -- '-doc$' \
-    | xargs apt-get -y purge;
+PKGS_DOC=( $(dpkg --list | awk '{ print $2 }' | grep -- '-doc$' || true) );
 
 # Delete X11 libraries
-apt-get -y purge libx11-data xauth libxmuu1 libxcb1 libx11-6 libxext6;
+PKGS_X11=( \
+  libx11-data \
+  xauth \
+  libxmuu1 \
+  libxcb1 \
+  libx11-6 \
+  libxext6 \
+  libxau6 \
+);
 
 # Delete obsolete networking
-apt-get -y purge ppp pppconfig pppoeconf;
+PKGS_OBSOLETE_NETWORKING=( \
+  ppp \
+  pppconfig \
+  pppoeconf \
+);
 
 # Delete oddities
-apt-get -y purge popularity-contest installation-report command-not-found command-not-found-data friendly-recovery bash-completion fonts-ubuntu-font-family-console laptop-detect;
+PKGS_ODDITIES=( \
+  popularity-contest \
+  installation-report \
+  command-not-found \
+  command-not-found-data \
+  friendly-recovery \
+  bash-completion \
+  fonts-ubuntu-font-family-console \
+  laptop-detect \
+);
 
-# Delete some other packages
-apt-get -y purge \
-    usbutils \
-    libusb-1.0-0 \
-    binutils \
-    console-setup \
-    console-setup-linux \
-    cpp \
-    cpp-5 \
-    crda \
-    iw \
-    wireless-regdb \
-    eject \
-    file \
-    keyboard-configuration \
-    krb5-locales \
-    libmagic1 \
-    make \
-    manpages \
-    netcat-openbsd \
-    os-prober \
-    tasksel \
-    tasksel-data \
-    vim-common \
-    whiptail \
-    xkb-data \
-    pciutils \
-;
+# Delete some packages
+PKGS_OTHER=( \
+  usbutils \
+  libusb-1.0-0 \
+  binutils \
+  console-setup \
+  console-setup-linux \
+  cpp \
+  cpp-5 \
+  crda \
+  iw \
+  wireless-regdb \
+  eject \
+  file \
+  keyboard-configuration \
+  krb5-locales \
+  libmagic1 \
+  make \
+  manpages \
+  netcat-openbsd \
+  os-prober \
+  tasksel \
+  tasksel-data \
+  vim-common \
+  whiptail \
+  xkb-data \
+  pciutils \
+  ubuntu-advantage-tools \
+  tcpd \
+);
+
+PKGS=( \
+  "${PKGS_LINUX_HEADERS[@]:+${PKGS_LINUX_HEADERS[@]}}" \
+  "${PKGS_LINUX_IMAGE[@]:+${PKGS_LINUX_IMAGE[@]}}" \
+  "${PKGS_LINUX_SOURCE[@]:+${PKGS_LINUX_SOURCE[@]}}" \
+  "${PKGS_DEV[@]:+${PKGS_DEV[@]}}" \
+  "${PKGS_DOC[@]:+${PKGS_DOC[@]}}" \
+  "${PKGS_X11[@]}" \
+  "${PKGS_OBSOLETE_NETWORKING[@]}" \
+  "${PKGS_ODDITIES[@]}" \
+  "${PKGS_OTHER[@]}" \
+);
+
+apt-get -y purge "${PKGS[@]}";
 
 # Exlude the files we don't need w/o uninstalling linux-firmware
 echo "==> Setup dpkg excludes for linux-firmware"

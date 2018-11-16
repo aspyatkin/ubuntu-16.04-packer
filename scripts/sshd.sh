@@ -1,4 +1,4 @@
-#!/bin/sh -eux
+#!/bin/bash
 
 SSHD_CONFIG="/etc/ssh/sshd_config"
 
@@ -7,16 +7,16 @@ sed -i -e '$a\' "$SSHD_CONFIG"
 
 USEDNS="UseDNS no"
 if grep -q -E "^[[:space:]]*UseDNS" "$SSHD_CONFIG"; then
-    sed -i "s/^\s*UseDNS.*/${USEDNS}/" "$SSHD_CONFIG"
+  sed -i "s/^\s*UseDNS.*/${USEDNS}/" "$SSHD_CONFIG"
 else
-    echo "$USEDNS" >>"$SSHD_CONFIG"
+  echo "$USEDNS" >>"$SSHD_CONFIG"
 fi
 
 GSSAPI="GSSAPIAuthentication no"
 if grep -q -E "^[[:space:]]*GSSAPIAuthentication" "$SSHD_CONFIG"; then
-    sed -i "s/^\s*GSSAPIAuthentication.*/${GSSAPI}/" "$SSHD_CONFIG"
+  sed -i "s/^\s*GSSAPIAuthentication.*/${GSSAPI}/" "$SSHD_CONFIG"
 else
-    echo "$GSSAPI" >>"$SSHD_CONFIG"
+  echo "$GSSAPI" >>"$SSHD_CONFIG"
 fi
 
 sed -i '/^AcceptEnv LANG LC_*/s/^/#/g' $SSHD_CONFIG

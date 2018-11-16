@@ -1,4 +1,5 @@
-#!/bin/sh -eux
+#!/bin/bash
+set -euxo pipefail;
 
 # Whiteout root
 count=$(df --sync -kP / | tail -n1  | awk -F ' ' '{print $4}')

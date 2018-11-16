@@ -1,4 +1,6 @@
-#!/bin/sh -eux
+#!/bin/bash
+set -euxo pipefail;
+
 export DEBIAN_FRONTEND=noninteractive
 
 # Update the package list
